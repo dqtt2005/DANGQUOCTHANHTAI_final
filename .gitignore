@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+env/
+build/
+dist/
+
+# Raw audio dataset (3000 files - download via git clone)
+data/raw/fsdd/recordings/*.wav
+data/raw/fsdd/.git/
+
+# Large checkpoints (keep structure)
+# checkpoints/*.pt
+
+# Temporary logs
+*.log
+.system_generated/
