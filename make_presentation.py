@@ -1,8 +1,3 @@
-"""
-Script tự động tạo file PowerPoint (.pptx) báo cáo bảo vệ đề tài
-với giao diện hiện đại, màu sắc học thuật chuyên nghiệp (Navy & Slate Blue),
-bố cục 12 slide đầy đủ và chi tiết.
-"""
 
 import sys
 from pathlib import Path
