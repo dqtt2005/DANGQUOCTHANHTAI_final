@@ -1,7 +1,4 @@
-"""
-Script hoàn thành các giai đoạn còn thiếu - KHÔNG dùng PyTorch (bị Device Guard chặn).
-Sử dụng numpy, matplotlib, pandas, csv để xử lý dữ liệu từ kết quả đã có.
-"""
+
 import sys
 sys.stdout.reconfigure(encoding='utf-8', line_buffering=True)
 
