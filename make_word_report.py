@@ -1,8 +1,3 @@
-"""
-Script tự động tạo file Word (.docx) Báo cáo Tiểu luận Cuối khóa hoàn chỉnh
-với trang bìa trang trọng, định dạng chuẩn khoa học, bảng biểu và mục lục
-theo đúng yêu cầu của giảng viên và đề cương học phần.
-"""
 
 import sys
 from pathlib import Path
