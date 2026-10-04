@@ -1,11 +1,3 @@
-"""
-Tạo file nén .zip đóng gói toàn bộ sản phẩm nộp LMS:
-- File Word có bìa (DangQuocThanhTai_Bao_cao_cuoi_ky.docx)
-- File PowerPoint (DangQuocThanhTai_Bao_cao_cuoi_ky.pptx)
-- Mã nguồn src/ và notebook notebooks/
-- Dữ liệu manifest, kết quả xuất ESP32, bảng biểu và checkpoint
-Loại trừ thư mục ảo .venv và file tạm.
-"""
 
 import sys
 import zipfile
