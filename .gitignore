@@ -9,12 +9,23 @@ build/
 dist/
 
 # Raw audio dataset (3000 files - download via git clone)
-data/raw/fsdd/recordings/*.wav
-data/raw/fsdd/.git/
+data/raw/
 
-# Large checkpoints (keep structure)
-# checkpoints/*.pt
+# Large checkpoints and processed data (too big for GitHub)
+checkpoints/*.pt
+data/processed/*.pt
+data/processed/*.json
 
-# Temporary logs
+# Large zip files  
+*.zip
+
+# PDF files (de cuong, phieu ra soat)
+DangQuocThanhTai_De_cuong_IoT_da_chinh_sua.docx.pdf
+DangQuocThanhTai_Phieu_ra_soat_khoa_hoc.docx.pdf
+
+# Temporary logs and scripts
 *.log
 .system_generated/
+check_status.py
+check_ckpt.py
+check_res.py

@@ -433,7 +433,7 @@ def create_full_report_docx(output_path: Path):
     )
 
     # Bảng 3
-    t3 = doc.add_table(rows=5, cols=5)
+    t3 = doc.add_table(rows=7, cols=5)
     t3.alignment = WD_TABLE_ALIGNMENT.CENTER
     h3 = ["Tiêu chí đánh giá", "TRTR (Mẫu thật)", "TSTR (Mẫu cVAE sinh)", "Độ lệch Delta_pp / Tỉ số R", "Đánh giá so với Mục tiêu"]
     for i, h in enumerate(h3):
@@ -447,8 +447,10 @@ def create_full_report_docx(output_path: Path):
     rows_data_t3 = [
         ("Accuracy (Seed 7)", "98.00%", "86.00%", "Delta_pp = +12.00 điểm %", "Đạt định hướng (<= 15 điểm %)"),
         ("Macro-F1 (Seed 7)", "0.9801", "0.8587", "Delta F1 = -0.1214", "Cân bằng trên đủ 10 chữ số"),
-        ("Tỉ số chuyển giao R", "1.0000", "0.8776", "R = 87.76%", "Đạt định hướng (>= 80%)"),
-        ("Accuracy (Seed 42)", "96.33%", "85.33% (ước lượng)", "Delta_pp = +11.00 điểm %", "Vượt mốc TRTR >= 90%")
+        ("Tỉ số chuyển giao R (Seed 7)", "1.0000", "0.8776", "R = 87.76%", "Đạt định hướng (>= 80%)"),
+        ("Accuracy (Seed 42)", "96.33%", "80.33%", "Delta_pp = +16.00 điểm %", "TRTR vượt xa mốc >= 90%"),
+        ("Tỉ số chuyển giao R (Seed 42)", "1.0000", "0.8339", "R = 83.39%", "Đạt định hướng (>= 80%)"),
+        ("Trung bình 2 Seed chính", "97.17% ± 1.18%", "83.17% ± 4.01%", "Delta_pp = +14.00 điểm %", "Đạt định hướng (<= 15 điểm %)")
     ]
     for r_idx, r_data in enumerate(rows_data_t3):
         for c_idx, val in enumerate(r_data):

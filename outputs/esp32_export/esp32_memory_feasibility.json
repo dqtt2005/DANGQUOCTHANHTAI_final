@@ -1,0 +1,17 @@
+{
+  "esp32_hardware": {
+    "chip": "ESP32-D0WDQ6 (Xtensa dual-core 32-bit LX6 @ 240MHz)",
+    "total_sram_kb": 520,
+    "usable_app_sram_kb": 320,
+    "flash_kb": 4096
+  },
+  "classifier_footprint": {
+    "parameters": 21834,
+    "flash_footprint_fp32_kb": 85.29,
+    "flash_footprint_int8_kb": 21.32,
+    "ram_tensor_arena_recommended_kb": 64,
+    "flash_utilization_percent": 2.08,
+    "sram_utilization_percent": 20.0,
+    "verdict": "Hoan toan kha thi tren ESP32."
+  }
+}

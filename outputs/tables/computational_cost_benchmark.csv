@@ -1,0 +1,4 @@
+Thanh phan,So tham so,Kich thuoc file (.pt),Ghi chu
+Classifier (CNN 3 khoi),"21,834",354.6 KB,Phu hop ESP32 (87 KB FP32 / 22 KB INT8)
+cVAE Day du (Encoder + Decoder),"~2,700,000",21319.8 KB,Chi dung tren PC de sinh mau
+Decoder (Sinh mau cVAE),"~1,350,000",Nam trong cVAE,Khong can trien khai len ESP32
