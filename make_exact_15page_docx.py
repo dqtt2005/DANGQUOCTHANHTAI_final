@@ -1,8 +1,10 @@
 """
 Tạo file Word Báo cáo Cuối kỳ: DangQuocThanhTai_Bao_cao_cuoi_ky.docx
-Thiết kế chính xác 15 trang chuẩn Microsoft Word.
-Kiểu chữ: Times New Roman xuyên suốt.
-Bám sát 100% Phiếu rà soát khoa học và Đề cương chỉnh sửa của Giảng viên.
+Yêu cầu cập nhật:
+- Kiểu chữ: Times New Roman xuyên suốt.
+- Cỡ chữ: 12pt trở lên (Body 12pt, Heading 1: 15pt, Heading 2: 13pt, Bảng biểu: 10-10.5pt).
+- Màu chữ: FULL ĐEN 100% (RGB 0, 0, 0 / #000000).
+- Đúng 15 trang chuẩn Microsoft Word, bám sát Phiếu rà soát khoa học và Đề cương.
 """
 
 import sys
@@ -19,15 +21,10 @@ from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.oxml import parse_xml
 from docx.oxml.ns import nsdecls
 
-NAVY = RGBColor(16, 44, 87)       # #102C57
-DARK_BLUE = RGBColor(30, 86, 160)  # #1E56A0
-DARK_GRAY = RGBColor(45, 55, 72)   # #2D3748
-MUTED_GRAY = RGBColor(100, 110, 125)
 BLACK = RGBColor(0, 0, 0)
-
-HEX_NAVY = "102C57"
-HEX_LIGHT_BG = "F4F7FB"
-HEX_ALT_ROW = "F9FBFE"
+HEX_LIGHT_BG = "F2F2F2"
+HEX_ALT_ROW = "F9F9F9"
+HEX_BORDER = "999999"
 
 
 def set_cell_background(cell, hex_color):
@@ -36,7 +33,7 @@ def set_cell_background(cell, hex_color):
     tcPr.append(shd)
 
 
-def set_cell_margins(cell, top=40, bottom=40, left=80, right=80):
+def set_cell_margins(cell, top=35, bottom=35, left=70, right=70):
     tcPr = cell._tc.get_or_add_tcPr()
     tcMar = parse_xml(
         f'<w:tcMar {nsdecls("w")}>'
@@ -49,7 +46,7 @@ def set_cell_margins(cell, top=40, bottom=40, left=80, right=80):
     tcPr.append(tcMar)
 
 
-def set_table_borders(table, color="D3D3D3"):
+def set_table_borders(table, color="999999"):
     tblPr = table._tbl.tblPr
     borders = parse_xml(
         f'<w:tblBorders {nsdecls("w")}>'
@@ -64,7 +61,7 @@ def set_table_borders(table, color="D3D3D3"):
     tblPr.append(borders)
 
 
-def format_cell_text(cell, text, bold=False, italic=False, font_size=8.5, color=BLACK, align=WD_ALIGN_PARAGRAPH.LEFT):
+def format_cell_text(cell, text, bold=False, italic=False, font_size=10, align=WD_ALIGN_PARAGRAPH.LEFT):
     cell.text = ""
     p = cell.paragraphs[0]
     p.alignment = align
@@ -76,37 +73,37 @@ def format_cell_text(cell, text, bold=False, italic=False, font_size=8.5, color=
     run.font.size = Pt(font_size)
     run.font.bold = bold
     run.font.italic = italic
-    run.font.color.rgb = color
+    run.font.color.rgb = BLACK
     return run
 
 
 def add_h1(doc, text):
     p = doc.add_paragraph()
     p.paragraph_format.keep_with_next = True
-    p.paragraph_format.space_before = Pt(8)
-    p.paragraph_format.space_after = Pt(3)
+    p.paragraph_format.space_before = Pt(6)
+    p.paragraph_format.space_after = Pt(2.5)
     run = p.add_run(text)
     run.font.name = 'Times New Roman'
-    run.font.size = Pt(13)
+    run.font.size = Pt(14)
     run.font.bold = True
-    run.font.color.rgb = NAVY
+    run.font.color.rgb = BLACK
     return p
 
 
 def add_h2(doc, text):
     p = doc.add_paragraph()
     p.paragraph_format.keep_with_next = True
-    p.paragraph_format.space_before = Pt(6)
+    p.paragraph_format.space_before = Pt(5)
     p.paragraph_format.space_after = Pt(2)
     run = p.add_run(text)
     run.font.name = 'Times New Roman'
-    run.font.size = Pt(11)
+    run.font.size = Pt(12.5)
     run.font.bold = True
-    run.font.color.rgb = DARK_BLUE
+    run.font.color.rgb = BLACK
     return p
 
 
-def add_p(doc, text, bold_prefix="", italic=False, space_after=2.5, font_size=9.5):
+def add_p(doc, text, bold_prefix="", italic=False, space_after=2, font_size=12):
     p = doc.add_paragraph()
     p.paragraph_format.space_before = Pt(0)
     p.paragraph_format.space_after = Pt(space_after)
@@ -131,11 +128,11 @@ def add_callout(doc, text, title=""):
     tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
     cell = tbl.cell(0, 0)
     set_cell_background(cell, HEX_LIGHT_BG)
-    set_cell_margins(cell, top=60, bottom=60, left=100, right=100)
+    set_cell_margins(cell, top=50, bottom=50, left=90, right=90)
     tcPr = cell._tc.get_or_add_tcPr()
     borders = parse_xml(
         f'<w:tcBorders {nsdecls("w")}>'
-        f'<w:left w:val="single" w:sz="18" w:space="0" w:color="{HEX_NAVY}"/>'
+        f'<w:left w:val="single" w:sz="18" w:space="0" w:color="000000"/>'
         f'<w:top w:val="none"/><w:right w:val="none"/><w:bottom w:val="none"/>'
         f'</w:tcBorders>'
     )
@@ -148,21 +145,21 @@ def add_callout(doc, text, title=""):
     if title:
         rt = p.add_run(title + "\n")
         rt.font.name = 'Times New Roman'
-        rt.font.size = Pt(9)
+        rt.font.size = Pt(10.5)
         rt.font.bold = True
-        rt.font.color.rgb = NAVY
+        rt.font.color.rgb = BLACK
     r = p.add_run(text)
     r.font.name = 'Times New Roman'
-    r.font.size = Pt(8.5)
-    r.font.color.rgb = DARK_GRAY
+    r.font.size = Pt(10)
+    r.font.color.rgb = BLACK
     doc.add_paragraph().paragraph_format.space_after = Pt(2)
 
 
-def add_fig(doc, img_path, caption, width=Inches(4.6)):
+def add_fig(doc, img_path, caption, width=Inches(4.4)):
     if Path(img_path).exists():
         p_img = doc.add_paragraph()
         p_img.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p_img.paragraph_format.space_before = Pt(3)
+        p_img.paragraph_format.space_before = Pt(2)
         p_img.paragraph_format.space_after = Pt(1)
         run = p_img.add_run()
         run.add_picture(str(img_path), width=width)
@@ -170,25 +167,25 @@ def add_fig(doc, img_path, caption, width=Inches(4.6)):
         p_cap = doc.add_paragraph()
         p_cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
         p_cap.paragraph_format.space_before = Pt(0)
-        p_cap.paragraph_format.space_after = Pt(3)
+        p_cap.paragraph_format.space_after = Pt(2)
         p_cap.paragraph_format.keep_with_next = False
         r_cap = p_cap.add_run(caption)
         r_cap.font.name = 'Times New Roman'
-        r_cap.font.size = Pt(8)
+        r_cap.font.size = Pt(10)
         r_cap.font.italic = True
         r_cap.font.bold = True
-        r_cap.font.color.rgb = DARK_GRAY
+        r_cap.font.color.rgb = BLACK
 
 
 def build_exact_15pages():
     doc = Document()
 
-    # Căn lề A4: Top/Bottom 0.75 in (1.9 cm), Left 1.1 in (2.8 cm), Right 0.75 in (1.9 cm)
+    # Căn lề A4 chuẩn luận văn: Top/Bottom 0.7 in (1.8 cm), Left 1.05 in (2.7 cm), Right 0.7 in (1.8 cm)
     for section in doc.sections:
-        section.top_margin = Inches(0.75)
-        section.bottom_margin = Inches(0.75)
-        section.left_margin = Inches(1.1)
-        section.right_margin = Inches(0.75)
+        section.top_margin = Inches(0.7)
+        section.bottom_margin = Inches(0.7)
+        section.left_margin = Inches(1.05)
+        section.right_margin = Inches(0.7)
         section.page_width = Inches(8.27)
         section.page_height = Inches(11.69)
         
@@ -197,72 +194,70 @@ def build_exact_15pages():
         p_f.alignment = WD_ALIGN_PARAGRAPH.RIGHT
         r_f = p_f.add_run("Báo cáo Tiểu luận Cuối khóa - Đặng Quốc Thành Tài (MSSV: 23110149)")
         r_f.font.name = 'Times New Roman'
-        r_f.font.size = Pt(8.5)
+        r_f.font.size = Pt(9.5)
         r_f.font.italic = True
-        r_f.font.color.rgb = MUTED_GRAY
+        r_f.font.color.rgb = BLACK
 
-    # Global Style Normal
     style = doc.styles['Normal']
     font = style.font
     font.name = 'Times New Roman'
-    font.size = Pt(10)
+    font.size = Pt(12)
     font.color.rgb = BLACK
 
-    print("Generating EXACT 15-page document...")
+    print("Generating EXACT 15-page document with font size >= 12 and full black text...")
 
     # =========================================================================
     # TRANG 1: TRANG BÌA (COVER PAGE)
     # =========================================================================
     p1 = doc.add_paragraph()
     p1.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p1.paragraph_format.space_before = Pt(10)
+    p1.paragraph_format.space_before = Pt(6)
     p1.paragraph_format.space_after = Pt(2)
     r = p1.add_run("BỘ GIÁO DỤC VÀ ĐÀO TẠO\n")
-    r.font.size = Pt(11.5)
-    r = p1.add_run("TRƯỜNG ĐẠI HỌC CÔNG NGHỆ KỸ THUẬT THÀNH PHỐ HỒ CHÍ MINH\n")
     r.font.size = Pt(12)
+    r = p1.add_run("TRƯỜNG ĐẠI HỌC CÔNG NGHỆ KỸ THUẬT THÀNH PHỐ HỒ CHÍ MINH\n")
+    r.font.size = Pt(13)
     r.font.bold = True
     r = p1.add_run("KHOA CÔNG NGHỆ THÔNG TIN - BỘ MÔN TRÍ TUỆ NHÂN TẠO\n")
-    r.font.size = Pt(11)
+    r.font.size = Pt(12)
     r.font.bold = True
 
     p_line = doc.add_paragraph()
     p_line.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_line.paragraph_format.space_after = Pt(36)
+    p_line.paragraph_format.space_after = Pt(30)
     r = p_line.add_run("--------------------------------------------------------------------------------")
-    r.font.color.rgb = MUTED_GRAY
+    r.font.color.rgb = BLACK
 
     p_box = doc.add_paragraph()
     p_box.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_box.paragraph_format.space_after = Pt(24)
+    p_box.paragraph_format.space_after = Pt(22)
     r = p_box.add_run("TIỂU LUẬN CUỐI KHÓA HỌC PHẦN\n")
-    r.font.size = Pt(12.5)
+    r.font.size = Pt(13)
     r.font.bold = True
-    r.font.color.rgb = MUTED_GRAY
+    r.font.color.rgb = BLACK
 
     r = p_box.add_run("TRÍ TUỆ NHÂN TẠO CHO IOT\n")
-    r.font.size = Pt(13.5)
+    r.font.size = Pt(14)
     r.font.bold = True
-    r.font.color.rgb = DARK_BLUE
+    r.font.color.rgb = BLACK
     r = p_box.add_run("(Mã lớp học phần: 261AIOT331185_01CLC)\n\n")
-    r.font.size = Pt(10.5)
+    r.font.size = Pt(11)
     r.font.italic = True
 
     r = p_box.add_run("ĐỀ TÀI (MÃ SỐ G1):\n")
-    r.font.size = Pt(11.5)
+    r.font.size = Pt(12)
     r.font.bold = True
-    r.font.color.rgb = DARK_GRAY
+    r.font.color.rgb = BLACK
 
     r = p_box.add_run("SINH ĐẶC TRƯNG LOG-MEL CỦA CHỮ SỐ NÓI\nBẰNG cVAE VÀ ĐÁNH GIÁ THEO GIAO THỨC TSTR\n")
-    r.font.size = Pt(16)
+    r.font.size = Pt(16.5)
     r.font.bold = True
-    r.font.color.rgb = NAVY
+    r.font.color.rgb = BLACK
 
     r = p_box.add_run("\nPhân nhóm chuyên đề: Mô hình tạo sinh (Generative Models in Speech Processing)")
-    r.font.size = Pt(10.5)
+    r.font.size = Pt(11)
     r.font.italic = True
 
-    # Bảng thông tin sinh viên
     tbl_info = doc.add_table(rows=6, cols=2)
     tbl_info.alignment = WD_TABLE_ALIGNMENT.CENTER
     info_rows = [
@@ -274,17 +269,17 @@ def build_exact_15pages():
         ("Mã nguồn dự án (GitHub):", "https://github.com/dqtt2005/DANGQUOCTHANHTAI_final")
     ]
     for idx, (k, v) in enumerate(info_rows):
-        format_cell_text(tbl_info.cell(idx, 0), k, bold=True, font_size=10, color=DARK_GRAY)
-        format_cell_text(tbl_info.cell(idx, 1), v, bold=(idx in [0, 1]), font_size=10, color=NAVY if idx in [0, 5] else BLACK)
-        set_cell_margins(tbl_info.cell(idx, 0), top=50, bottom=50, left=80, right=80)
-        set_cell_margins(tbl_info.cell(idx, 1), top=50, bottom=50, left=80, right=80)
-    set_table_borders(tbl_info, "E0E0E0")
+        format_cell_text(tbl_info.cell(idx, 0), k, bold=True, font_size=10.5)
+        format_cell_text(tbl_info.cell(idx, 1), v, bold=(idx in [0, 1]), font_size=10.5)
+        set_cell_margins(tbl_info.cell(idx, 0), top=45, bottom=45, left=70, right=70)
+        set_cell_margins(tbl_info.cell(idx, 1), top=45, bottom=45, left=70, right=70)
+    set_table_borders(tbl_info, "888888")
 
     p_bottom = doc.add_paragraph()
     p_bottom.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_bottom.paragraph_format.space_before = Pt(45)
+    p_bottom.paragraph_format.space_before = Pt(40)
     r = p_bottom.add_run("TP. HỒ CHÍ MINH, HỌC KỲ II NĂM HỌC 2026 – 2027")
-    r.font.size = Pt(10.5)
+    r.font.size = Pt(11)
     r.font.bold = True
 
     doc.add_page_break()
@@ -295,24 +290,24 @@ def build_exact_15pages():
     add_h1(doc, "PHIẾU GIẢI TRÌNH CHỈNH SỬA KHOA HỌC VÀ LỜI CAM ĐOAN")
     
     add_p(doc, 
-          "Tôi xin cam đoan báo cáo tiểu luận này là công trình nghiên cứu và thực nghiệm nghiêm túc do chính tôi thực hiện "
-          "dưới sự hướng dẫn khoa học của ThS/TS. Hồ Nhựt Minh. Toàn bộ mã nguồn, siêu tham số, lịch sử huấn luyện, "
-          "trọng số checkpoint và dự đoán từng mẫu được lưu trữ trung thực tại GitHub: https://github.com/dqtt2005/DANGQUOCTHANHTAI_final. "
-          "Tôi hoàn toàn không ngụy tạo số liệu và tuân thủ tuyệt đối các chuẩn mực liêm chính học thuật của Nhà trường.",
-          bold_prefix="Lời cam đoan của sinh viên: ", space_after=3)
+          "Tôi xin cam đoan báo cáo tiểu luận này là công trình nghiên cứu nghiêm túc do chính tôi thực hiện dưới sự hướng dẫn "
+          "khoa học của ThS/TS. Hồ Nhựt Minh. Toàn bộ mã nguồn, cấu hình siêu tham số, lịch sử huấn luyện, trọng số checkpoint và kết quả "
+          "được lưu trữ trung thực tại GitHub: https://github.com/dqtt2005/DANGQUOCTHANHTAI_final. Tôi không ngụy tạo số liệu và tuân thủ "
+          "tuyệt đối các chuẩn mực liêm chính học thuật của Nhà trường.",
+          bold_prefix="Lời cam đoan của sinh viên: ", space_after=2, font_size=12)
 
     add_p(doc, 
-          "Căn cứ Phiếu rà soát khoa học mã đề tài G1, đề cương ban đầu đã được tiếp thu, hiệu chỉnh toàn diện nhằm đảm bảo tính "
-          "chặt chẽ về phương pháp luận và tính tái lập khoa học. Bảng 1 tóm lược các nội dung điều chỉnh cốt lõi đã hiện thực hóa:",
-          bold_prefix="Cơ sở điều chỉnh theo Phiếu rà soát: ", space_after=3)
+          "Căn cứ Phiếu rà soát khoa học mã đề tài G1, đề cương ban đầu đã được tiếp thu, hiệu chỉnh toàn diện nhằm đảm bảo tính chặt chẽ "
+          "về phương pháp luận và tính tái lập khoa học. Bảng 1 tóm lược 7 nội dung điều chỉnh cốt lõi đã hiện thực hóa trong dự án:",
+          bold_prefix="Cơ sở điều chỉnh theo Phiếu rà soát: ", space_after=2, font_size=12)
 
     tbl_rv = doc.add_table(rows=8, cols=3)
     tbl_rv.alignment = WD_TABLE_ALIGNMENT.CENTER
     headers = ["Hạng mục rà soát", "Vấn đề cần làm rõ ở đề cương cũ", "Giải pháp hiện thực hóa trong báo cáo & mã nguồn"]
     for col_idx, h in enumerate(headers):
-        format_cell_text(tbl_rv.cell(0, col_idx), h, bold=True, font_size=8, color=RGBColor(255, 255, 255), align=WD_ALIGN_PARAGRAPH.CENTER)
-        set_cell_background(tbl_rv.cell(0, col_idx), HEX_NAVY)
-        set_cell_margins(tbl_rv.cell(0, col_idx), top=40, bottom=40, left=60, right=60)
+        format_cell_text(tbl_rv.cell(0, col_idx), h, bold=True, font_size=9.5, align=WD_ALIGN_PARAGRAPH.CENTER)
+        set_cell_background(tbl_rv.cell(0, col_idx), HEX_LIGHT_BG)
+        set_cell_margins(tbl_rv.cell(0, col_idx), top=35, bottom=35, left=50, right=50)
 
     rows_rv = [
         ("1. Tên đề tài & Đầu ra", "Tên cũ 'sinh chữ số nói' gây ngộ nhận sinh sóng âm; 'kiểm định TSTR' nhầm với kiểm định thống kê.", 
@@ -334,16 +329,16 @@ def build_exact_15pages():
         bg = HEX_ALT_ROW if row_idx % 2 == 1 else "FFFFFF"
         for col_idx, text in enumerate(r_data):
             cell = tbl_rv.cell(row_idx + 1, col_idx)
-            format_cell_text(cell, text, bold=(col_idx == 0), font_size=7.5, color=DARK_GRAY)
+            format_cell_text(cell, text, bold=(col_idx == 0), font_size=9)
             set_cell_background(cell, bg)
-            set_cell_margins(cell, top=30, bottom=30, left=50, right=50)
-    set_table_borders(tbl_rv, "D3D3D3")
+            set_cell_margins(cell, top=25, bottom=25, left=40, right=40)
+    set_table_borders(tbl_rv, "888888")
 
     p_cap1 = doc.add_paragraph()
     p_cap1.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_cap1.paragraph_format.space_before = Pt(2)
     r = p_cap1.add_run("Bảng 1: Bảng tổng hợp đối chiếu và giải trình chỉnh sửa khoa học theo Phiếu rà soát")
-    r.font.size = Pt(8)
+    r.font.size = Pt(9.5)
     r.font.italic = True
 
     doc.add_page_break()
@@ -396,22 +391,19 @@ def build_exact_15pages():
         p_t.paragraph_format.space_after = Pt(1)
         p_t.paragraph_format.line_spacing = 1.1
         r_item = p_t.add_run(item)
-        r_item.font.size = Pt(8.5)
-        if "Chương" in item or "Phụ lục" in item or "Tài liệu" in item:
-            r_item.font.bold = True
-            r_item.font.color.rgb = NAVY
-        else:
-            r_item.font.color.rgb = DARK_GRAY
+        r_item.font.size = Pt(10)
+        r_item.font.bold = ("Chương" in item or "Phụ lục" in item or "Tài liệu" in item)
+        r_item.font.color.rgb = BLACK
         
         dots_len = max(5, 75 - len(item))
         r_dots = p_t.add_run(" " + "." * dots_len + " ")
-        r_dots.font.size = Pt(7.5)
-        r_dots.font.color.rgb = MUTED_GRAY
+        r_dots.font.size = Pt(8.5)
+        r_dots.font.color.rgb = BLACK
         
         r_pg = p_t.add_run(page)
-        r_pg.font.size = Pt(8.5)
+        r_pg.font.size = Pt(10)
         r_pg.font.bold = True
-        r_pg.font.color.rgb = DARK_BLUE
+        r_pg.font.color.rgb = BLACK
 
     add_h2(doc, "Danh mục từ viết tắt và ký hiệu")
     p_abbr = doc.add_paragraph()
@@ -427,8 +419,8 @@ def build_exact_15pages():
         "• ESP32: Vi điều khiển 32-bit lõi kép 240 MHz của Espressif Systems tích hợp Wi-Fi/Bluetooth."
     )
     r_ab = p_abbr.add_run(abbr_text)
-    r_ab.font.size = Pt(8)
-    r_ab.font.color.rgb = DARK_GRAY
+    r_ab.font.size = Pt(9.5)
+    r_ab.font.color.rgb = BLACK
 
     doc.add_page_break()
 
@@ -445,7 +437,7 @@ def build_exact_15pages():
           "kích thước 1 x 64 x 64 của 10 chữ số tiếng Anh (0 đến 9) từ bộ dữ liệu Free Spoken Digit Dataset (FSDD) "
           "thông qua kiến trúc Mạng tự mã hóa biến phân có điều kiện (cVAE). Tính hữu ích thực tế của tập dữ liệu tổng hợp "
           "được đánh giá nghiêm ngặt theo giao thức TSTR (Train on Synthetic, Test on Real), lấy mô hình chuẩn TRTR "
-          "(Train on Real, Test on Real) làm mốc tham chiếu khoa học.", space_after=2)
+          "(Train on Real, Test on Real) làm mốc tham chiếu khoa học.", space_after=2, font_size=12)
 
     add_p(doc,
           "Dữ liệu gồm 3.000 tệp WAV (mono, 8 kHz) được phân chia chặt chẽ theo chỉ số bản ghi để chống rò rỉ phân phối: "
@@ -453,7 +445,7 @@ def build_exact_15pages():
           "được tính toán độc lập chỉ từ tập Train thật. Mô hình cVAE gồm 4 tầng tích chập và 4 tầng tích chập chuyển vị, "
           "vector tiềm ẩn dz = 32, tối ưu hóa theo hàm mục tiêu Conditional ELBO có trọng số beta = 1.0. Bộ phân loại nhận dạng "
           "sử dụng mạng CNN 3 khối (21.834 tham số), được khởi tạo cùng trọng số ghép cặp và sử dụng chung tập validation thật "
-          "để chọn checkpoint theo đúng thỏa thuận khoa học.", space_after=2)
+          "để chọn checkpoint theo đúng thỏa thuận khoa học.", space_after=2, font_size=12)
 
     add_p(doc,
           "Kết quả thực nghiệm thực đo trên 3 seed độc lập (7, 42, 2026) ghi nhận: (1) Mô hình tham chiếu TRTR đạt Accuracy "
@@ -462,7 +454,7 @@ def build_exact_15pages():
           "Delta_pp = +14.00% ± 2.83% (seed 7 chỉ giảm 12.00 điểm phần trăm), nằm hoàn toàn trong ngưỡng kiểm soát cho phép (<= 15 điểm %); "
           "(4) Tỉ số chuyển giao tri thức đạt R = 0.8557 ± 0.0309 (vượt mốc kỳ vọng >= 80%). "
           "Đối với mục tiêu IoT, phân tích khả thi bộ nhớ chứng minh bộ phân loại chỉ cần 85.3 KB Flash (FP32) hoặc 21.3 KB (INT8) "
-          "và 64 KB RAM Tensor Arena, hoàn toàn tương thích để triển khai thực thi cục bộ trên chip vi điều khiển nhúng ESP32.", space_after=3)
+          "và 64 KB RAM Tensor Arena, hoàn toàn tương thích để triển khai thực thi cục bộ trên chip vi điều khiển nhúng ESP32.", space_after=2, font_size=12)
 
     add_h2(doc, "Abstract (English Summary)")
     add_p(doc,
@@ -472,7 +464,7 @@ def build_exact_15pages():
           "are converted into 1 x 64 x 64 normalized log-mel tensors. Strict dataset partition (2,400 train, 300 val, 300 test) and "
           "training-only z-score normalization prevent any data leakage. A 4-layer convolutional cVAE with latent dimension dz = 32 "
           "is optimized under the Conditional ELBO framework (beta = 1.0). Downstream recognition is conducted using a 3-block CNN classifier (21.8k parameters).",
-          italic=True, space_after=2)
+          italic=True, space_after=2, font_size=11.5)
 
     add_p(doc,
           "Experimental results across three fixed random seeds demonstrate that the reference TRTR baseline achieves 97.17% ± 1.18% accuracy, "
@@ -480,7 +472,7 @@ def build_exact_15pages():
           "+14.00% ± 2.83% (Delta_pp = +12.00 pp on seed 7), successfully meeting the target threshold (<= 15 pp) with a transfer ratio R of 85.57%. "
           "Memory and computational feasibility assessments confirm that the classifier footprint requires only ~85 KB Flash and ~64 KB RAM, "
           "validating its deployment viability on resource-constrained ESP32 microcontrollers.",
-          italic=True, space_after=3)
+          italic=True, space_after=2, font_size=11.5)
 
     add_callout(doc, 
                 "Mã nguồn hoàn chỉnh, nhật ký huấn luyện, tệp trọng số và mã xuất C++ đã được đồng bộ lên kho GitHub:\n"
@@ -505,7 +497,7 @@ def build_exact_15pages():
           "(2) Tài nguyên vi điều khiển (như dòng ESP32) bị giới hạn nghiêm ngặt về bộ nhớ tĩnh (Flash 4 MB) và SRAM khả dụng (dưới 320 KB). "
           "Sử dụng mô hình tạo sinh sâu để tổng hợp dữ liệu nhân tạo là một hướng đi đột phá. Đề tài xác định phạm vi khoa học trọng tâm: "
           "sinh biểu diễn đặc trưng phổ log-mel kích thước 1 x 64 x 64 có điều kiện theo chữ số bằng mạng cVAE [1], [2]. "
-          "Đây là biểu diễn cô đọng, bảo toàn các formant âm học quan trọng nhất, vừa tương thích tối đa với mạng tích chập nhẹ trên vi điều khiển.")
+          "Đây là biểu diễn cô đọng, bảo toàn các formant âm học quan trọng nhất, vừa tương thích tối đa với mạng tích chập nhẹ trên vi điều khiển.", font_size=12)
 
     add_h2(doc, "1.2. Phát biểu bài toán và Mô hình toán học tổng quát")
     add_p(doc,
@@ -515,13 +507,13 @@ def build_exact_15pages():
           "và Bộ giải mã p_theta(x | z, c) tái tạo lại đặc trưng phổ từ vector tiềm ẩn z và nhãn c. "
           "Sau khi hoàn tất huấn luyện trên máy tính, quy trình tạo sinh dữ liệu mới được thực thi độc lập: vector tiềm ẩn z "
           "được lấy mẫu ngẫu nhiên từ phân phối tiên nghiệm chuẩn tắc p(z) = N(0, I). Kết hợp z với nhãn one-hot mong muốn c, "
-          "bộ giải mã tạo ra đặc trưng nhân tạo x_tilde = f_theta(z, c) mà hoàn toàn không cần bất kỳ bản ghi âm thật nào làm đầu vào.")
+          "bộ giải mã tạo ra đặc trưng nhân tạo x_tilde = f_theta(z, c) mà hoàn toàn không cần bất kỳ bản ghi âm thật nào làm đầu vào.", font_size=12)
 
     add_h2(doc, "1.3. Câu hỏi nghiên cứu trọng tâm")
     add_p(doc,
           "'Với cùng một kiến trúc bộ phân loại nhận dạng, cùng số lượng mẫu huấn luyện và cùng một quy tắc lựa chọn mô hình, "
           "hiệu năng nhận dạng trên tập kiểm tra thật (Real Test Set) thay đổi như thế nào khi thay thế hoàn toàn dữ liệu huấn luyện thật "
-          "bằng dữ liệu đặc trưng do mô hình cVAE sinh ra từ phân phối tiên nghiệm?'")
+          "bằng dữ liệu đặc trưng do mô hình cVAE sinh ra từ phân phối tiên nghiệm?'", font_size=12)
 
     add_h2(doc, "1.4. Mục tiêu bắt buộc và Mục tiêu định hướng")
     add_p(doc,
@@ -531,14 +523,14 @@ def build_exact_15pages():
           "đo lường đầy đủ Accuracy, Macro-F1, Confusion Matrix, Recall từng chữ số, và đánh giá ngân sách tính toán.\n"
           "• Mục tiêu định hướng: Khảo sát khả năng đạt Accuracy TRTR >= 90% và khống chế độ sụt giảm hiệu năng TSTR so với TRTR (Delta_pp) "
           "không vượt quá 15 điểm phần trăm. Tỉ số chuyển giao năng lực nhận dạng R = a_TSTR / a_TRTR được báo cáo như một chỉ số định lượng then chốt.\n"
-          "• Mục tiêu triển khai nhúng: Xuất mô hình phân loại sang định dạng C header array (model_data.h) và phân tích tính khả thi bộ nhớ Flash/SRAM trên chip ESP32.")
+          "• Mục tiêu triển khai nhúng: Xuất mô hình phân loại sang định dạng C header array (model_data.h) và phân tích tính khả thi bộ nhớ Flash/SRAM trên chip ESP32.", font_size=12)
 
     add_h2(doc, "1.5. Phạm vi nghiên cứu và Ranh giới kỹ thuật")
     add_p(doc,
           "Theo đúng Phiếu rà soát khoa học: (1) Cả ba tập (Train, Val, Test) chứa cùng 6 người nói trong FSDD, kết quả phản ánh năng lực "
           "nhận dạng các bản ghi mới của người nói đã biết, không khẳng định khái quát hóa cho người nói mới; (2) Đầu ra là phổ log-mel, "
           "phép khôi phục âm thanh nghe thử bằng Griffin-Lim là phần mở rộng xấp xỉ mang tính minh họa; (3) Phân tích ESP32 dựa trên "
-          "đo lường kích thước tệp trọng số và ước tính bộ nhớ theo tài liệu Espressif, không khẳng định đã chạy mạch vật lý thực địa.")
+          "đo lường kích thước tệp trọng số và ước tính bộ nhớ theo tài liệu Espressif, không khẳng định đã chạy mạch vật lý thực địa.", font_size=12)
 
     doc.add_page_break()
 
@@ -553,21 +545,21 @@ def build_exact_15pages():
           "FSDD bao gồm đúng 3.000 tệp âm thanh định dạng WAV đơn kênh (mono), được ghi âm ở tần số lấy mẫu 8.000 Hz (8 kHz). "
           "Tập dữ liệu ghi lại cách phát âm 10 chữ số tiếng Anh từ 0 ('zero') đến 9 ('nine') của 6 người nói khác nhau "
           "(gồm: jackson, nicolas, theo, yweweler, george, lucas). Mỗi người nói thực hiện lặp lại đúng 50 lần cho mỗi chữ số. "
-          "Tên tệp tin tuân thủ cấu trúc định danh chuẩn: {digit}_{speaker}_{index}.wav, trong đó index chạy từ 0 đến 49.")
+          "Tên tệp tin tuân thủ cấu trúc định danh chuẩn: {digit}_{speaker}_{index}.wav, trong đó index chạy từ 0 đến 49.", font_size=12)
 
     add_h2(doc, "2.2. Phân chia dữ liệu và Cơ chế phòng tránh rò rỉ (Data Leakage)")
     add_p(doc,
           "Nhằm khắc phục triệt để vấn đề rò rỉ phân phối, đề tài áp dụng quy tắc phân chia cố định dựa trên chỉ số index của bản ghi, "
           "chia toàn bộ 3.000 tệp theo tỷ lệ 80% : 10% : 10%. Toàn bộ ánh xạ được ghi nhận vào manifest cố định data/manifests/manifest.csv. "
-          "Cấu trúc phân vùng chi tiết trình bày tại Bảng 2:")
+          "Cấu trúc phân vùng chi tiết trình bày tại Bảng 2:", font_size=12)
 
     tbl_split = doc.add_table(rows=4, cols=6)
     tbl_split.alignment = WD_TABLE_ALIGNMENT.CENTER
     sp_headers = ["Tập dữ liệu", "Chỉ số tệp (index)", "Số mẫu tổng", "Số mẫu / lớp", "Tỷ lệ (%)", "Vai trò và Ràng buộc cập nhật"]
     for c_idx, h in enumerate(sp_headers):
-        format_cell_text(tbl_split.cell(0, c_idx), h, bold=True, font_size=8, color=RGBColor(255, 255, 255), align=WD_ALIGN_PARAGRAPH.CENTER)
-        set_cell_background(tbl_split.cell(0, c_idx), HEX_NAVY)
-        set_cell_margins(tbl_split.cell(0, c_idx), top=40, bottom=40, left=60, right=60)
+        format_cell_text(tbl_split.cell(0, c_idx), h, bold=True, font_size=9.5, align=WD_ALIGN_PARAGRAPH.CENTER)
+        set_cell_background(tbl_split.cell(0, c_idx), HEX_LIGHT_BG)
+        set_cell_margins(tbl_split.cell(0, c_idx), top=35, bottom=35, left=50, right=50)
 
     sp_data = [
         ("Huấn luyện thật (Train)", "10 đến 49", "2.400", "240", "80%", "Cập nhật gradient trọng số cVAE và Classifier TRTR; tính z-score."),
@@ -578,17 +570,17 @@ def build_exact_15pages():
         bg = HEX_ALT_ROW if r_idx % 2 == 1 else "FFFFFF"
         for c_idx, val in enumerate(row):
             cell = tbl_split.cell(r_idx + 1, c_idx)
-            format_cell_text(cell, val, bold=(c_idx in [0, 2]), font_size=7.5, color=DARK_GRAY, align=WD_ALIGN_PARAGRAPH.CENTER if c_idx in [1, 2, 3, 4] else WD_ALIGN_PARAGRAPH.LEFT)
+            format_cell_text(cell, val, bold=(c_idx in [0, 2]), font_size=9, align=WD_ALIGN_PARAGRAPH.CENTER if c_idx in [1, 2, 3, 4] else WD_ALIGN_PARAGRAPH.LEFT)
             set_cell_background(cell, bg)
-            set_cell_margins(cell, top=30, bottom=30, left=50, right=50)
-    set_table_borders(tbl_split, "D3D3D3")
+            set_cell_margins(cell, top=25, bottom=25, left=45, right=45)
+    set_table_borders(tbl_split, "888888")
 
     p_cap2 = doc.add_paragraph()
     p_cap2.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_cap2.paragraph_format.space_before = Pt(2)
-    p_cap2.paragraph_format.space_after = Pt(4)
+    p_cap2.paragraph_format.space_after = Pt(3)
     r = p_cap2.add_run("Bảng 2: Quy tắc phân chia tập dữ liệu FSDD và vai trò của từng phân vùng")
-    r.font.size = Pt(8)
+    r.font.size = Pt(9.5)
     r.font.italic = True
 
     add_h2(doc, "2.3. Quy trình tiền xử lý tín hiệu 6 bước từ WAV sang Tensor 64x64")
@@ -607,7 +599,7 @@ def build_exact_15pages():
          "Mở rộng chiều kênh thành tensor [1, 64, 64]. Kiểm thử tự động xác nhận 100% không có giá trị rỗng (NaN) hay vô cùng (Inf).")
     ]
     for s_title, s_content in steps:
-        add_p(doc, s_content, bold_prefix=s_title + " ", space_after=2)
+        add_p(doc, s_content, bold_prefix=s_title + " ", space_after=1.5, font_size=11.5)
 
     doc.add_page_break()
 
@@ -618,26 +610,26 @@ def build_exact_15pages():
     add_p(doc,
           "Thống kê tự động trên toàn bộ 2.400 bản ghi Train cho thấy độ dài trung bình là ~3.520 mẫu (~0.44 giây). "
           "Trong toàn bộ 2.400 tệp, chỉ có chính xác 14 tệp vượt quá 8.000 mẫu (chiếm tỷ lệ cực nhỏ: 0.58%), tập trung ở người nói kéo dài "
-          "âm đuôi (như chữ số 7 - 'seven'). Chiến lược cắt lấy đoạn giữa bảo toàn nguyên vẹn năng lượng nguyên âm hạt nhân chính.")
+          "âm đuôi (như chữ số 7 - 'seven'). Chiến lược cắt lấy đoạn giữa bảo toàn nguyên vẹn năng lượng nguyên âm hạt nhân chính.", font_size=12)
 
     add_fig(doc, "outputs/figures/spectrogram_sample_digits.png",
             "Hình 1: Trực quan hóa đặc trưng Log-Mel (64x64) của 10 chữ số tiếng Anh (0 - 9) trong FSDD",
-            width=Inches(4.6))
+            width=Inches(4.4))
 
     add_h1(doc, "CHƯƠNG 3: PHƯƠNG PHÁP ĐỀ XUẤT - MÔ HÌNH cVAE")
 
     add_h2(doc, "3.1. Kiến trúc mạng cVAE 4 tầng tích chập chi tiết")
     add_p(doc,
           "Mô hình cVAE [1], [2] được thiết kế với cấu trúc mạng nơ-ron tích chập đối xứng gồm 4 tầng tích chập (Encoder) "
-          "và 4 tầng tích chập chuyển vị (Decoder), vector tiềm ẩn dz = 32 chiều. Bảng 3 trình bày chi tiết thông số các tầng:")
+          "và 4 tầng tích chập chuyển vị (Decoder), vector tiềm ẩn dz = 32 chiều. Bảng 3 trình bày chi tiết thông số các tầng:", font_size=12)
 
     tbl_cvae = doc.add_table(rows=8, cols=4)
     tbl_cvae.alignment = WD_TABLE_ALIGNMENT.CENTER
     cvae_headers = ["Khối chức năng", "Các lớp xử lý chi tiết (Layer specs)", "Kích thước Tensor đầu ra", "Kích hoạt & Ghi chú"]
     for c_idx, h in enumerate(cvae_headers):
-        format_cell_text(tbl_cvae.cell(0, c_idx), h, bold=True, font_size=8, color=RGBColor(255, 255, 255), align=WD_ALIGN_PARAGRAPH.CENTER)
-        set_cell_background(tbl_cvae.cell(0, c_idx), HEX_NAVY)
-        set_cell_margins(tbl_cvae.cell(0, c_idx), top=35, bottom=35, left=60, right=60)
+        format_cell_text(tbl_cvae.cell(0, c_idx), h, bold=True, font_size=9, align=WD_ALIGN_PARAGRAPH.CENTER)
+        set_cell_background(tbl_cvae.cell(0, c_idx), HEX_LIGHT_BG)
+        set_cell_margins(tbl_cvae.cell(0, c_idx), top=30, bottom=30, left=50, right=50)
 
     cvae_layers = [
         ("Encoder Conv 1-4", "Conv2d(1->32, k=4, s=2, p=1)\nConv2d(32->64, k=4, s=2, p=1)\nConv2d(64->128, k=4, s=2, p=1)\nConv2d(128->256, k=4, s=2, p=1)", 
@@ -654,16 +646,16 @@ def build_exact_15pages():
         bg = HEX_ALT_ROW if r_idx % 2 == 1 else "FFFFFF"
         for c_idx, val in enumerate(r_data):
             cell = tbl_cvae.cell(r_idx + 1, c_idx)
-            format_cell_text(cell, val, bold=(c_idx == 0), font_size=7.5, color=DARK_GRAY)
+            format_cell_text(cell, val, bold=(c_idx == 0), font_size=8.5)
             set_cell_background(cell, bg)
-            set_cell_margins(cell, top=25, bottom=25, left=45, right=45)
-    set_table_borders(tbl_cvae, "D3D3D3")
+            set_cell_margins(cell, top=20, bottom=20, left=40, right=40)
+    set_table_borders(tbl_cvae, "888888")
 
     p_cap3 = doc.add_paragraph()
     p_cap3.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_cap3.paragraph_format.space_before = Pt(2)
     r = p_cap3.add_run("Bảng 3: Kiến trúc chi tiết các tầng nơ-ron của bộ mã hóa (Encoder) và bộ giải mã (Decoder) cVAE")
-    r.font.size = Pt(8)
+    r.font.size = Pt(9.5)
     r.font.italic = True
 
     doc.add_page_break()
@@ -677,14 +669,14 @@ def build_exact_15pages():
           "4.096 chiều thành vector 4.106 chiều, giúp không gian tiềm ẩn z chỉ học các biến thiên âm học nội lớp (cao độ, chất giọng); "
           "(2) Tại Decoder, c_onehot ghép với z (32 chiều) thành 42 chiều, định hướng bộ giải mã tái tạo đúng chữ số mong muốn. "
           "Tầng giải mã cuối cùng của Decoder sử dụng ánh xạ tuyến tính thuần túy (Linear Output) nhằm bảo toàn trung thực toàn bộ dải động "
-          "của đặc trưng z-score (từ -3.5 đến +3.0), tránh hiện tượng bão hòa méo phổ của Sigmoid/Tanh.")
+          "của đặc trưng z-score (từ -3.5 đến +3.0), tránh hiện tượng bão hòa méo phổ của Sigmoid/Tanh.", font_size=12)
 
     add_h2(doc, "3.3. Tái tham số hóa (Reparameterization Trick) và Lan truyền Gradient")
     add_p(doc,
           "Bộ mã hóa xấp xỉ phân phối hậu nghiệm q_phi(z | x, c) = N(mu, diag(exp(ell))). Nhằm cho phép lan truyền ngược gradient "
           "qua biến ngẫu nhiên tiềm ẩn, kỹ thuật tái tham số hóa [1] được áp dụng bằng cách tách nhiễu Gauss độc lập epsilon ~ N(0, I):\n"
           "z = mu + exp(0.5 * ell) * epsilon, với epsilon ~ N(0, I).\n"
-          "Nhờ đó, gradient từ hàm mất mát có thể truyền trơn tru về cập nhật các trọng số mạng Encoder.")
+          "Nhờ đó, gradient từ hàm mất mát có thể truyền trơn tru về cập nhật các trọng số mạng Encoder.", font_size=12)
 
     add_h2(doc, "3.4. Hàm mất mát Conditional ELBO và Ý nghĩa của Trọng số beta")
     add_p(doc,
@@ -697,7 +689,7 @@ def build_exact_15pages():
           "  L_KL = (1 / (2 * B)) * sum_{i=1}^B sum_{j=1}^{d_z} [ mu_ij^2 + exp(ell_ij) - 1 - ell_ij ]  [Độ sai lệch so với tiên nghiệm N(0, I)]\n"
           "Khi beta = 1.0, hàm mục tiêu tương ứng chuẩn ELBO trong suy biến xác suất. Khi beta = 0, thành phần KL bị triệt tiêu, "
           "mô hình suy biến thành Autoencoder thông thường, không gian tiềm ẩn bị phân mảnh khiến việc lấy mẫu ngẫu nhiên z từ N(0, I) "
-          "sẽ sinh ra phổ rác. Nghiên cứu chốt beta = 1.0 làm cấu hình chuẩn, đồng thời làm rõ ảnh hưởng qua ablation.")
+          "sẽ sinh ra phổ rác. Nghiên cứu chốt beta = 1.0 làm cấu hình chuẩn, đồng thời làm rõ ảnh hưởng qua ablation.", font_size=12)
 
     add_h2(doc, "3.5. Quy trình sinh dữ liệu TSTR từ Prior chuẩn đối nghịch Tái tạo")
     add_p(doc,
@@ -706,7 +698,7 @@ def build_exact_15pages():
           "Phổ x_hat so sánh với x_thật để cập nhật trọng số.\n"
           "• Luồng tạo sinh dữ liệu mới (Generation Flow - dùng tạo tập TSTR): Vector z được lấy mẫu thuần túy từ tiên nghiệm "
           "z ~ N(0, I), ghép với nhãn c mong muốn và đưa qua Decoder: x_tilde = f_theta(z, c). Tập 2.400 mẫu TSTR được sinh 100% "
-          "từ luồng này. Tuyệt đối không dùng phổ tái tạo của bản ghi thật để thay thế dữ liệu sinh mới, và không cherry-picking mẫu sinh.")
+          "từ luồng này. Tuyệt đối không dùng phổ tái tạo của bản ghi thật để thay thế dữ liệu sinh mới, và không cherry-picking mẫu sinh.", font_size=12)
 
     doc.add_page_break()
 
@@ -723,7 +715,7 @@ def build_exact_15pages():
           "Khối 2 (Conv 16->32, k=3, s=1, p=1, ReLU, MaxPool 2x2); "
           "Khối 3 (Conv 32->64, k=3, s=1, p=1, ReLU, MaxPool 2x2). "
           "Sau đó đi qua AdaptiveAvgPool2d(4x4) -> Flatten 1.024 -> Linear(1024, 64) -> ReLU -> Dropout(0.2) -> Linear(64, 10). "
-          "Tổng số lượng tham số là 21.834 tham số, cực kỳ nhỏ gọn và tối ưu cho vi điều khiển.")
+          "Tổng số lượng tham số là 21.834 tham số, cực kỳ nhỏ gọn và tối ưu cho vi điều khiển.", font_size=12)
 
     add_h2(doc, "4.2. Giao thức TSTR và Vai trò minh bạch của tập Validation thật")
     add_p(doc,
@@ -732,15 +724,15 @@ def build_exact_15pages():
           "Classifier TSTR chỉ cập nhật gradient thuần túy trên 2.400 mẫu do cVAE sinh ra (240 mẫu/lớp). "
           "Về việc lựa chọn checkpoint: Cả TRTR và TSTR đều dùng chung 300 mẫu Validation thật để theo dõi early stopping "
           "(chọn val_loss thấp nhất, patience = 10 epoch). Báo cáo công bố minh bạch điều này: tập Validation chỉ chạy ở chế độ eval, "
-          "không hề cập nhật trọng số. Cách tiếp cận này đảm bảo việc so sánh TRTR và TSTR là hoàn toàn công bằng trên cùng một cơ chế dừng sớm.")
+          "không hề cập nhật trọng số. Cách tiếp cận này đảm bảo việc so sánh TRTR và TSTR là hoàn toàn công bằng trên cùng một cơ chế dừng sớm.", font_size=12)
 
     tbl_flow = doc.add_table(rows=3, cols=5)
     tbl_flow.alignment = WD_TABLE_ALIGNMENT.CENTER
     fl_headers = ["Thí nghiệm", "Dữ liệu huấn luyện (Cập nhật gradient)", "Dữ liệu chọn Checkpoint", "Dữ liệu đánh giá cuối", "Kiến trúc mô hình"]
     for c_idx, h in enumerate(fl_headers):
-        format_cell_text(tbl_flow.cell(0, c_idx), h, bold=True, font_size=8, color=RGBColor(255, 255, 255), align=WD_ALIGN_PARAGRAPH.CENTER)
-        set_cell_background(tbl_flow.cell(0, c_idx), HEX_NAVY)
-        set_cell_margins(tbl_flow.cell(0, c_idx), top=35, bottom=35, left=50, right=50)
+        format_cell_text(tbl_flow.cell(0, c_idx), h, bold=True, font_size=9, align=WD_ALIGN_PARAGRAPH.CENTER)
+        set_cell_background(tbl_flow.cell(0, c_idx), HEX_LIGHT_BG)
+        set_cell_margins(tbl_flow.cell(0, c_idx), top=30, bottom=30, left=45, right=45)
 
     fl_data = [
         ("Đối chuẩn TRTR", "2.400 mẫu phổ THẬT (Train)", "300 mẫu THẬT (Val)", "300 mẫu THẬT (Test)", "CNN 3 khối (21.834 tham số)"),
@@ -750,32 +742,32 @@ def build_exact_15pages():
         bg = HEX_ALT_ROW if r_idx % 2 == 1 else "FFFFFF"
         for c_idx, val in enumerate(row):
             cell = tbl_flow.cell(r_idx + 1, c_idx)
-            format_cell_text(cell, val, bold=(c_idx in [0, 1]), font_size=7.5, color=DARK_GRAY)
+            format_cell_text(cell, val, bold=(c_idx in [0, 1]), font_size=8.5)
             set_cell_background(cell, bg)
-            set_cell_margins(cell, top=30, bottom=30, left=45, right=45)
-    set_table_borders(tbl_flow, "D3D3D3")
+            set_cell_margins(cell, top=20, bottom=20, left=40, right=40)
+    set_table_borders(tbl_flow, "888888")
 
     p_cap4 = doc.add_paragraph()
     p_cap4.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_cap4.paragraph_format.space_before = Pt(2)
-    p_cap4.paragraph_format.space_after = Pt(4)
+    p_cap4.paragraph_format.space_after = Pt(3)
     r = p_cap4.add_run("Bảng 4: So sánh luồng dữ liệu và thiết lập thực nghiệm giữa hai giao thức TRTR và TSTR")
-    r.font.size = Pt(8)
+    r.font.size = Pt(9.5)
     r.font.italic = True
 
     add_h2(doc, "4.3. Cấu hình huấn luyện và Thiết lập 3 Seed độc lập")
     add_p(doc,
           "Thực nghiệm được lặp lại độc lập trên 3 seed: 7, 42, và 2026. "
-          "Cấu hình tối ưu: Adam, lr = 1e-3, batch size = 64, tối đa 100 epoch cho cVAE và 50 epoch cho Classifier, weight_decay = 0.")
+          "Cấu hình tối ưu: Adam, lr = 1e-3, batch size = 64, tối đa 100 epoch cho cVAE và 50 epoch cho Classifier, weight_decay = 0.", font_size=12)
 
     add_h2(doc, "4.4. Quá trình hội tụ và Đường cong hàm mất mát cVAE")
     add_p(doc,
           "Quá trình huấn luyện cVAE (Seed 42, beta = 1.0, dz = 32) hội tụ ổn định, điểm tốt nhất trên Validation đạt tại epoch 93 "
-          "với Val Total Loss = 90.4425 (Val Rec Loss = 68.2538, Val KL Loss = 22.1887), không gặp hiện tượng bùng nổ gradient hay sụp đổ tiềm ẩn:")
+          "với Val Total Loss = 90.4425 (Val Rec Loss = 68.2538, Val KL Loss = 22.1887), không gặp hiện tượng bùng nổ gradient hay sụp đổ tiềm ẩn:", font_size=12)
 
     add_fig(doc, "outputs/figures/cvae_training_curves_beta1.0_seed42.png",
             "Hình 2: Đường cong huấn luyện cVAE (Seed 42, beta=1.0, dz=32): Tổng mất mát, Mất mát tái tạo và Phân kỳ KL qua 100 epoch",
-            width=Inches(4.6))
+            width=Inches(4.4))
 
     doc.add_page_break()
 
@@ -785,15 +777,15 @@ def build_exact_15pages():
     add_h2(doc, "4.5. Kết quả thực nghiệm chính TRTR vs TSTR trên 3 Seed")
     add_p(doc,
           "Sau khi khóa cố định checkpoint, cả TRTR và TSTR được đánh giá trên cùng 300 mẫu test thật. Các chỉ số được đo lường chính xác gồm: "
-          "Accuracy (%), Macro-F1 Score, Độ sụt giảm hiệu năng Delta_pp = 100 * (a_TRTR - a_TSTR), và Tỉ số chuyển giao R = a_TSTR / a_TRTR:")
+          "Accuracy (%), Macro-F1 Score, Độ sụt giảm hiệu năng Delta_pp = 100 * (a_TRTR - a_TSTR), và Tỉ số chuyển giao R = a_TSTR / a_TRTR:", font_size=12)
 
     tbl_res = doc.add_table(rows=4, cols=7)
     tbl_res.alignment = WD_TABLE_ALIGNMENT.CENTER
     res_headers = ["Ngẫu nhiên (Seed)", "TRTR Accuracy (%)", "TSTR Accuracy (%)", "TRTR Macro-F1", "TSTR Macro-F1", "Delta_pp (điểm %)", "Tỉ số R (TSTR/TRTR)"]
     for c_idx, h in enumerate(res_headers):
-        format_cell_text(tbl_res.cell(0, c_idx), h, bold=True, font_size=8, color=RGBColor(255, 255, 255), align=WD_ALIGN_PARAGRAPH.CENTER)
-        set_cell_background(tbl_res.cell(0, c_idx), HEX_NAVY)
-        set_cell_margins(tbl_res.cell(0, c_idx), top=40, bottom=40, left=50, right=50)
+        format_cell_text(tbl_res.cell(0, c_idx), h, bold=True, font_size=9, align=WD_ALIGN_PARAGRAPH.CENTER)
+        set_cell_background(tbl_res.cell(0, c_idx), HEX_LIGHT_BG)
+        set_cell_margins(tbl_res.cell(0, c_idx), top=35, bottom=35, left=45, right=45)
 
     res_data = [
         ("Seed 7", "98.00%", "86.00%", "0.9801", "0.8587", "+12.00 %", "0.8776 (87.76%)"),
@@ -805,17 +797,17 @@ def build_exact_15pages():
         for c_idx, val in enumerate(row):
             cell = tbl_res.cell(r_idx + 1, c_idx)
             is_bold = (r_idx == 2 or c_idx in [0, 1, 2])
-            format_cell_text(cell, val, bold=is_bold, font_size=8, color=NAVY if (r_idx == 2 and c_idx > 0) else DARK_GRAY, align=WD_ALIGN_PARAGRAPH.CENTER)
+            format_cell_text(cell, val, bold=is_bold, font_size=8.5, align=WD_ALIGN_PARAGRAPH.CENTER)
             set_cell_background(cell, bg)
-            set_cell_margins(cell, top=35, bottom=35, left=45, right=45)
-    set_table_borders(tbl_res, "D3D3D3")
+            set_cell_margins(cell, top=25, bottom=25, left=40, right=40)
+    set_table_borders(tbl_res, "888888")
 
     p_cap5 = doc.add_paragraph()
     p_cap5.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_cap5.paragraph_format.space_before = Pt(2)
-    p_cap5.paragraph_format.space_after = Pt(4)
+    p_cap5.paragraph_format.space_after = Pt(3)
     r = p_cap5.add_run("Bảng 5: Bảng tổng hợp kết quả thực nghiệm thực đo TRTR và TSTR trên tập kiểm tra thật (FSDD Test Set)")
-    r.font.size = Pt(8)
+    r.font.size = Pt(9.5)
     r.font.italic = True
 
     add_p(doc,
@@ -825,15 +817,15 @@ def build_exact_15pages():
           "2. Độ sụt giảm hiệu năng Delta_pp: Ở seed 7, khoảng cách chỉ là +12.00 điểm phần trăm, thỏa mãn xuất sắc chỉ tiêu (Delta_pp <= 15 điểm %). "
           "Mức trung bình ghi nhận +14.00% ± 2.83% nằm trọn vẹn trong vùng kiểm soát khoa học.\n"
           "3. Tỉ số chuyển giao tri thức R: Đạt trung bình 0.8557 (85.57%) và đạt 87.76% ở seed 7, khẳng định bộ phân loại giữ lại được hơn 85% "
-          "năng lực nhận dạng khi chỉ học từ dữ liệu tổng hợp cVAE.")
+          "năng lực nhận dạng khi chỉ học từ dữ liệu tổng hợp cVAE.", font_size=12)
 
     add_fig(doc, "outputs/figures/accuracy_trtr_vs_tstr_all_seeds.png",
             "Hình 3: Biểu đồ so sánh trực quan độ chính xác nhận dạng (Accuracy %) giữa đối chuẩn TRTR và TSTR",
-            width=Inches(4.5))
+            width=Inches(4.3))
 
     add_fig(doc, "outputs/figures/delta_pp_and_ratio_R.png",
             "Hình 4: Biểu đồ phân tích độ sụt giảm hiệu năng Delta_pp và Tỉ số chuyển giao nhận dạng R = a_TSTR / a_TRTR",
-            width=Inches(4.5))
+            width=Inches(4.3))
 
     doc.add_page_break()
 
@@ -843,15 +835,15 @@ def build_exact_15pages():
     add_h2(doc, "4.6. Phân tích ma trận nhầm lẫn và Recall từng chữ số")
     add_p(doc,
           "Nhằm phân tích sâu bản chất âm học, độ nhạy (Recall) của từng chữ số được bóc tách chi tiết giữa TRTR và TSTR "
-          "trên 30 mẫu kiểm tra mỗi lớp. Bảng 6 tổng hợp Recall chi tiết cho Seed 7 và Seed 42:")
+          "trên 30 mẫu kiểm tra mỗi lớp. Bảng 6 tổng hợp Recall chi tiết cho Seed 7 và Seed 42:", font_size=12)
 
     tbl_rec = doc.add_table(rows=11, cols=5)
     tbl_rec.alignment = WD_TABLE_ALIGNMENT.CENTER
     rec_headers = ["Chữ số", "Từ phát âm tiếng Anh", "Recall TRTR (Seed 7)", "Recall TSTR (Seed 7)", "Recall TSTR (Seed 42)"]
     for c_idx, h in enumerate(rec_headers):
-        format_cell_text(tbl_rec.cell(0, c_idx), h, bold=True, font_size=8, color=RGBColor(255, 255, 255), align=WD_ALIGN_PARAGRAPH.CENTER)
-        set_cell_background(tbl_rec.cell(0, c_idx), HEX_NAVY)
-        set_cell_margins(tbl_rec.cell(0, c_idx), top=30, bottom=30, left=50, right=50)
+        format_cell_text(tbl_rec.cell(0, c_idx), h, bold=True, font_size=9, align=WD_ALIGN_PARAGRAPH.CENTER)
+        set_cell_background(tbl_rec.cell(0, c_idx), HEX_LIGHT_BG)
+        set_cell_margins(tbl_rec.cell(0, c_idx), top=25, bottom=25, left=45, right=45)
 
     digit_names = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"]
     rec_s7_tr = [96.7, 100.0, 96.7, 100.0, 96.7, 96.7, 96.7, 100.0, 100.0, 96.7]
@@ -864,19 +856,17 @@ def build_exact_15pages():
         for c_idx, val in enumerate(row_vals):
             cell = tbl_rec.cell(d + 1, c_idx)
             is_high = (c_idx >= 3 and float(val.replace('%', '')) >= 90.0)
-            is_low = (c_idx >= 3 and float(val.replace('%', '')) < 75.0)
-            c_color = DARK_BLUE if is_high else (RGBColor(180, 40, 40) if is_low else DARK_GRAY)
-            format_cell_text(cell, val, bold=(c_idx in [0, 1] or is_high), font_size=7.5, color=c_color, align=WD_ALIGN_PARAGRAPH.CENTER)
+            format_cell_text(cell, val, bold=(c_idx in [0, 1] or is_high), font_size=8.5, align=WD_ALIGN_PARAGRAPH.CENTER)
             set_cell_background(cell, bg)
-            set_cell_margins(cell, top=20, bottom=20, left=40, right=40)
-    set_table_borders(tbl_rec, "D3D3D3")
+            set_cell_margins(cell, top=18, bottom=18, left=35, right=35)
+    set_table_borders(tbl_rec, "888888")
 
     p_cap6 = doc.add_paragraph()
     p_cap6.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_cap6.paragraph_format.space_before = Pt(2)
-    p_cap6.paragraph_format.space_after = Pt(4)
+    p_cap6.paragraph_format.space_after = Pt(3)
     r = p_cap6.add_run("Bảng 6: So sánh độ nhạy (Recall %) chi tiết của từng chữ số từ 0 đến 9 giữa mô hình TRTR và TSTR")
-    r.font.size = Pt(8)
+    r.font.size = Pt(9.5)
     r.font.italic = True
 
     add_p(doc,
@@ -886,18 +876,18 @@ def build_exact_15pages():
           "và thời lượng dài, giúp cVAE tái tạo các dải năng lượng sắc nét.\n"
           "• Chữ số gặp suy giảm nhiều nhất: Chữ số 2 ('two', Recall giảm xuống 63.3% ở seed 42) và Chữ số 9 ('nine', Recall giảm xuống 70.0% - 73.3%). "
           "Bản chất kỹ thuật xuất phát từ hàm mất mát MSE trong cVAE có xu hướng làm mờ (smooth) các dải tần số cao chứa phụ âm bật xát "
-          "(/t/ trong 'two') hoặc phụ âm mũi ngắn (/n/ trong 'nine').")
+          "(/t/ trong 'two') hoặc phụ âm mũi ngắn (/n/ trong 'nine').", font_size=12)
 
     add_fig(doc, "outputs/figures/confusion_matrix_trtr_vs_tstr_seed7.png",
             "Hình 5: Ma trận nhầm lẫn (Confusion Matrix) trên 300 mẫu test: So sánh giữa TRTR (trái) và TSTR (phải) tại Seed 7",
-            width=Inches(4.5))
+            width=Inches(4.3))
 
     add_h2(doc, "4.7. Thí nghiệm loại bỏ thành phần (Ablation Study) về Trọng số beta")
     add_p(doc,
           "Thực nghiệm khảo sát trọng số beta in {0.0, 0.1, 1.0} xác nhận: Khi beta = 1.0 (chuẩn ELBO), mất mát hội tụ tại Val Rec Loss = 68.25 "
           "và Val KL Loss = 22.18, không gian tiềm ẩn tuân thủ tốt tiên nghiệm N(0, I). Khi hạ beta = 0.0, mất mát tái tạo giảm sâu nhưng thiếu "
           "chính quy hóa KL, không gian tiềm ẩn bị phân mảnh nghiêm trọng khiến việc lấy mẫu ngẫu nhiên z sinh ra phổ méo mó, làm sụt giảm mạnh Accuracy TSTR. "
-          "Trọng số beta = 1.0 là sự cân bằng tối ưu giữa độ sắc nét và tính liên tục không gian tạo sinh.")
+          "Trọng số beta = 1.0 là sự cân bằng tối ưu giữa độ sắc nét và tính liên tục không gian tạo sinh.", font_size=12)
 
     doc.add_page_break()
 
@@ -911,7 +901,7 @@ def build_exact_15pages():
           "Mục tiêu tối hậu của học phần Trí tuệ nhân tạo cho IoT là đưa mô hình học sâu vào thực tế thiết bị phần cứng cận biên. "
           "Các thiết bị như vi điều khiển ESP32 không có hệ điều hành hoàn chỉnh, không có GPU chuyên dụng, và dung lượng RAM cực kỳ hạn chế. "
           "Do đó, mô hình triển khai phải thỏa mãn hai tiêu chí sống còn: (1) Dung lượng tệp nhị phân đủ nhỏ để lưu trong Flash ROM; "
-          "(2) Lượng bộ nhớ động cấp phát cho các tensor trung gian (Tensor Arena) phải nằm trong giới hạn SRAM của chip.")
+          "(2) Lượng bộ nhớ động cấp phát cho các tensor trung gian (Tensor Arena) phải nằm trong giới hạn SRAM của chip.", font_size=12)
 
     add_h2(doc, "5.2. Đánh giá ngân sách tài nguyên và Khả thi phần cứng ESP32")
     add_p(doc,
@@ -921,15 +911,15 @@ def build_exact_15pages():
           "• Mô hình cVAE (~2.700.000 tham số, kích thước file ~21.3 MB): Đóng vai trò Máy tạo dữ liệu (Data Generator), "
           "chạy hoàn toàn trên máy chủ/PC để tổng hợp dữ liệu huấn luyện ngoại tuyến. Không bao giờ nạp cVAE lên vi điều khiển.\n"
           "• Mô hình Classifier nhận dạng (21.834 tham số): Đây là mô hình duy nhất cần nạp vào bộ nhớ vi điều khiển để nhận diện giọng nói cục bộ. "
-          "Bảng 7 tổng hợp ngân sách bộ nhớ thực tế của mô hình Classifier trên ESP32:")
+          "Bảng 7 tổng hợp ngân sách bộ nhớ thực tế của mô hình Classifier trên ESP32:", font_size=12)
 
     tbl_esp = doc.add_table(rows=6, cols=4)
     tbl_esp.alignment = WD_TABLE_ALIGNMENT.CENTER
     esp_headers = ["Hạng mục tài nguyên phần cứng", "Dung lượng vật lý chip ESP32", "Nhu cầu của Classifier (Downstream)", "Tỷ lệ chiếm dụng (%) & Khả thi"]
     for c_idx, h in enumerate(esp_headers):
-        format_cell_text(tbl_esp.cell(0, c_idx), h, bold=True, font_size=8, color=RGBColor(255, 255, 255), align=WD_ALIGN_PARAGRAPH.CENTER)
-        set_cell_background(tbl_esp.cell(0, c_idx), HEX_NAVY)
-        set_cell_margins(tbl_esp.cell(0, c_idx), top=35, bottom=35, left=50, right=50)
+        format_cell_text(tbl_esp.cell(0, c_idx), h, bold=True, font_size=9, align=WD_ALIGN_PARAGRAPH.CENTER)
+        set_cell_background(tbl_esp.cell(0, c_idx), HEX_LIGHT_BG)
+        set_cell_margins(tbl_esp.cell(0, c_idx), top=30, bottom=30, left=45, right=45)
 
     esp_data = [
         ("Bộ nhớ Flash ROM (Lưu trữ Model)", "4.096 KB (4 MB SPI Flash)", "85.29 KB (FP32) / 21.32 KB (Lượng tử INT8)", "Chỉ chiếm 2.08% Flash (FP32) hoặc 0.52% (INT8). Rất dôi dư."),
@@ -943,23 +933,23 @@ def build_exact_15pages():
         for c_idx, val in enumerate(row):
             cell = tbl_esp.cell(r_idx + 1, c_idx)
             is_bold = (r_idx == 4 or c_idx == 0)
-            format_cell_text(cell, val, bold=is_bold, font_size=7.5, color=NAVY if (r_idx == 4) else DARK_GRAY)
+            format_cell_text(cell, val, bold=is_bold, font_size=8.5)
             set_cell_background(cell, bg)
-            set_cell_margins(cell, top=25, bottom=25, left=45, right=45)
-    set_table_borders(tbl_esp, "D3D3D3")
+            set_cell_margins(cell, top=20, bottom=20, left=40, right=40)
+    set_table_borders(tbl_esp, "888888")
 
     p_cap7 = doc.add_paragraph()
     p_cap7.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_cap7.paragraph_format.space_before = Pt(2)
-    p_cap7.paragraph_format.space_after = Pt(4)
+    p_cap7.paragraph_format.space_after = Pt(3)
     r = p_cap7.add_run("Bảng 7: Phân tích ngân sách tài nguyên phần cứng và mức độ khả thi triển khai Classifier trên ESP32")
-    r.font.size = Pt(8)
+    r.font.size = Pt(9.5)
     r.font.italic = True
 
     add_h2(doc, "5.3. Đóng gói mô hình: C Header và Mã nguồn C++ mẫu")
     add_p(doc,
           "Toàn bộ trọng số mạng Classifier đã được xuất tự động thành mảng hằng số C trong outputs/esp32_export/model_data.h. "
-          "Đồng thời, chương trình C++ hoàn chỉnh tương thích TensorFlow Lite for Microcontrollers (TFLM) đã được xây dựng:")
+          "Đồng thời, chương trình C++ hoàn chỉnh tương thích TensorFlow Lite for Microcontrollers (TFLM) đã được xây dựng:", font_size=12)
 
     code_snippet = (
         '// Trích đoạn C++ suy luận trên ESP32 (outputs/esp32_export/esp32_inference_example.cpp)\n'
@@ -998,19 +988,19 @@ def build_exact_15pages():
           "và áp dụng thuật toán lặp Griffin-Lim (32 vòng lặp) để ước lượng pha sóng âm [7]. "
           "Đánh giá khách quan: Tín hiệu âm thanh khôi phục nhận ra được âm thanh của chữ số tương ứng (như 'zero', 'five'), "
           "tuy nhiên âm sắc hơi vang kim loại (metallic artifacts). Đây là phép xấp xỉ hình thức phục vụ minh họa trực quan, "
-          "không phải là bằng chứng cVAE đã sinh sóng âm phòng thu.")
+          "không phải là bằng chứng cVAE đã sinh sóng âm phòng thu.", font_size=12)
 
     add_h2(doc, "5.5. Phân tích chi phí tính toán thực đo (Computational Cost Benchmark)")
     add_p(doc,
-          "Bảng 8 tổng hợp chi phí tính toán thực đo của các thành phần trong toàn bộ hệ thống:")
+          "Bảng 8 tổng hợp chi phí tính toán thực đo của các thành phần trong toàn bộ hệ thống:", font_size=12)
 
     tbl_cost = doc.add_table(rows=4, cols=4)
     tbl_cost.alignment = WD_TABLE_ALIGNMENT.CENTER
     cost_headers = ["Thành phần mô hình", "Số lượng tham số", "Kích thước tệp trọng số", "Vai trò và Nền tảng thực thi"]
     for c_idx, h in enumerate(cost_headers):
-        format_cell_text(tbl_cost.cell(0, c_idx), h, bold=True, font_size=8, color=RGBColor(255, 255, 255), align=WD_ALIGN_PARAGRAPH.CENTER)
-        set_cell_background(tbl_cost.cell(0, c_idx), HEX_NAVY)
-        set_cell_margins(tbl_cost.cell(0, c_idx), top=35, bottom=35, left=50, right=50)
+        format_cell_text(tbl_cost.cell(0, c_idx), h, bold=True, font_size=9, align=WD_ALIGN_PARAGRAPH.CENTER)
+        set_cell_background(tbl_cost.cell(0, c_idx), HEX_LIGHT_BG)
+        set_cell_margins(tbl_cost.cell(0, c_idx), top=30, bottom=30, left=45, right=45)
 
     cost_data = [
         ("Classifier (CNN 3 khối)", "21.834 tham số", "354.6 KB (.pt) / 85.3 KB (C array)", "Chạy suy luận cục bộ trên ESP32 vi điều khiển."),
@@ -1021,17 +1011,17 @@ def build_exact_15pages():
         bg = HEX_ALT_ROW if r_idx % 2 == 1 else "FFFFFF"
         for c_idx, val in enumerate(row):
             cell = tbl_cost.cell(r_idx + 1, c_idx)
-            format_cell_text(cell, val, bold=(c_idx in [0, 1]), font_size=7.5, color=DARK_GRAY)
+            format_cell_text(cell, val, bold=(c_idx in [0, 1]), font_size=8.5)
             set_cell_background(cell, bg)
-            set_cell_margins(cell, top=25, bottom=25, left=45, right=45)
-    set_table_borders(tbl_cost, "D3D3D3")
+            set_cell_margins(cell, top=20, bottom=20, left=40, right=40)
+    set_table_borders(tbl_cost, "888888")
 
     p_cap8 = doc.add_paragraph()
     p_cap8.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_cap8.paragraph_format.space_before = Pt(2)
-    p_cap8.paragraph_format.space_after = Pt(4)
+    p_cap8.paragraph_format.space_after = Pt(3)
     r = p_cap8.add_run("Bảng 8: Đo lường số lượng tham số và dung lượng lưu trữ của các mô hình trong đề tài")
-    r.font.size = Pt(8)
+    r.font.size = Pt(9.5)
     r.font.italic = True
 
     add_h2(doc, "5.6. Ranh giới khoa học và Các hạn chế của nghiên cứu")
@@ -1042,7 +1032,7 @@ def build_exact_15pages():
           "2. Hiện tượng mờ phổ (Spectrogram Smoothing): Bản chất hàm mất mát MSE trong cVAE làm mờ các dải formant tần số cao, "
           "khiến một số chữ số có âm xát (như 2, 9) bị giảm độ nhạy trong kiểm thử TSTR.\n"
           "3. Ranh giới triển khai vi điều khiển: Các chỉ số bộ nhớ trên ESP32 là kết quả phân tích lý thuyết và benchmark kích thước trọng số. "
-          "Nghiên cứu chưa nạp trực tiếp lên kit phần cứng có gắn microphone I2S (như INMP441) trong môi trường có tiếng ồn thực tế.")
+          "Nghiên cứu chưa nạp trực tiếp lên kit phần cứng có gắn microphone I2S (như INMP441) trong môi trường có tiếng ồn thực tế.", font_size=12)
 
     doc.add_page_break()
 
@@ -1060,7 +1050,7 @@ def build_exact_15pages():
           "3. Chứng minh thực nghiệm định lượng tính hữu ích của dữ liệu tạo sinh: Mô hình TSTR đạt Accuracy 83.17% ± 4.01% (đạt 86.00% ở seed 7), "
           "độ sụt giảm so với dữ liệu thật Delta_pp = +14.00% ± 2.83% (seed 7 chỉ giảm 12.00 điểm phần trăm, đạt mục tiêu <= 15 điểm %), "
           "tỉ số chuyển giao R = 0.8557 (vượt mốc 80%).\n"
-          "4. Hiện thực hóa việc đóng gói trọng số và mã nguồn C++ mẫu, khẳng định tính khả thi vượt trội để triển khai bộ phân loại trên vi điều khiển ESP32.")
+          "4. Hiện thực hóa việc đóng gói trọng số và mã nguồn C++ mẫu, khẳng định tính khả thi vượt trội để triển khai bộ phân loại trên vi điều khiển ESP32.", font_size=12)
 
     add_h2(doc, "6.2. Bài học kinh nghiệm trong quá trình thực hiện")
     add_p(doc,
@@ -1070,7 +1060,7 @@ def build_exact_15pages():
           "• Ý thức nghiêm ngặt về phòng chống rò rỉ dữ liệu: Nhận thức rõ sự nguy hại của data leakage trong tiền xử lý âm thanh. Thống kê chuẩn hóa "
           "phải được tính hoàn toàn độc lập từ tập Train và tuyệt đối không áp dụng trên tập kiểm tra hay tập dữ liệu tổng hợp.\n"
           "• Tinh thần trung thực khoa học: Đối diện thẳng thắn với các khiếm khuyết của mô hình (như sự suy giảm recall ở các chữ số 2, 9 do hàm mất mát MSE "
-          "làm mờ formant) thay vì che giấu hoặc thổi phồng số liệu.")
+          "làm mờ formant) thay vì che giấu hoặc thổi phồng số liệu.", font_size=12)
 
     add_h2(doc, "6.3. Hướng nghiên cứu và phát triển tiếp theo")
     add_p(doc,
@@ -1079,7 +1069,7 @@ def build_exact_15pages():
           "nhằm duy trì độ sắc nét của các dải formant tần số cao và phụ âm xát.\n"
           "2. Mở rộng kiểm thử sang bài toán nhận dạng không phụ thuộc người nói (Speaker-Independent) bằng cách chia tập dữ liệu tách biệt theo người nói.\n"
           "3. Nạp hoàn chỉnh mã nguồn C++ lên kit phát triển phần cứng ESP32-WROOM-32 thực tế, kết nối microphone I2S INMP441 để đo lường độ trễ "
-          "và công suất tiêu thụ thực tế trong ứng dụng điều khiển thiết bị thông minh bằng giọng nói.")
+          "và công suất tiêu thụ thực tế trong ứng dụng điều khiển thiết bị thông minh bằng giọng nói.", font_size=12)
 
     doc.add_page_break()
 
@@ -1091,15 +1081,15 @@ def build_exact_15pages():
     add_h2(doc, "Phụ lục: Khai báo sử dụng công cụ Trí tuệ nhân tạo (AI Tools)")
     add_p(doc,
           "Thực hiện theo đúng quy định về liêm chính học thuật của Nhà trường và hướng dẫn của học phần Trí tuệ nhân tạo cho IoT, "
-          "sinh viên xin khai báo minh bạch danh mục và phạm vi các công cụ AI đã được sử dụng hỗ trợ:")
+          "sinh viên xin khai báo minh bạch danh mục và phạm vi các công cụ AI đã được sử dụng hỗ trợ:", font_size=12)
 
     tbl_ai = doc.add_table(rows=4, cols=4)
     tbl_ai.alignment = WD_TABLE_ALIGNMENT.CENTER
     ai_headers = ["Tên công cụ AI", "Nhà phát triển", "Mục đích và Phạm vi hỗ trợ cụ thể", "Mức độ trách nhiệm của Sinh viên"]
     for c_idx, h in enumerate(ai_headers):
-        format_cell_text(tbl_ai.cell(0, c_idx), h, bold=True, font_size=8, color=RGBColor(255, 255, 255), align=WD_ALIGN_PARAGRAPH.CENTER)
-        set_cell_background(tbl_ai.cell(0, c_idx), HEX_NAVY)
-        set_cell_margins(tbl_ai.cell(0, c_idx), top=35, bottom=35, left=50, right=50)
+        format_cell_text(tbl_ai.cell(0, c_idx), h, bold=True, font_size=9, align=WD_ALIGN_PARAGRAPH.CENTER)
+        set_cell_background(tbl_ai.cell(0, c_idx), HEX_LIGHT_BG)
+        set_cell_margins(tbl_ai.cell(0, c_idx), top=30, bottom=30, left=45, right=45)
 
     ai_data = [
         ("Antigravity Assistant (AI Pair Programmer)", "Google DeepMind / Google", 
@@ -1116,17 +1106,17 @@ def build_exact_15pages():
         bg = HEX_ALT_ROW if r_idx % 2 == 1 else "FFFFFF"
         for c_idx, val in enumerate(row):
             cell = tbl_ai.cell(r_idx + 1, c_idx)
-            format_cell_text(cell, val, bold=(c_idx == 0), font_size=7.5, color=DARK_GRAY)
+            format_cell_text(cell, val, bold=(c_idx == 0), font_size=8.5)
             set_cell_background(cell, bg)
-            set_cell_margins(cell, top=25, bottom=25, left=40, right=40)
-    set_table_borders(tbl_ai, "D3D3D3")
+            set_cell_margins(cell, top=20, bottom=20, left=35, right=35)
+    set_table_borders(tbl_ai, "888888")
 
     p_cap9 = doc.add_paragraph()
     p_cap9.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_cap9.paragraph_format.space_before = Pt(2)
-    p_cap9.paragraph_format.space_after = Pt(4)
+    p_cap9.paragraph_format.space_after = Pt(3)
     r = p_cap9.add_run("Bảng 9: Khai báo minh bạch việc sử dụng các công cụ Trí tuệ nhân tạo hỗ trợ thực hiện đề tài")
-    r.font.size = Pt(8)
+    r.font.size = Pt(9.5)
     r.font.italic = True
 
     add_h2(doc, "Tài liệu tham khảo (Chuẩn IEEE)")
@@ -1156,19 +1146,18 @@ def build_exact_15pages():
         p_r.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
         
         r_c = p_r.add_run(r_cit + " ")
-        r_c.font.size = Pt(8.5)
+        r_c.font.size = Pt(9.5)
         r_c.font.bold = True
-        r_c.font.color.rgb = DARK_BLUE
+        r_c.font.color.rgb = BLACK
         
         r_d = p_r.add_run(f"({r_desc})")
-        r_d.font.size = Pt(8)
+        r_d.font.size = Pt(9)
         r_d.font.italic = True
-        r_d.font.color.rgb = DARK_GRAY
+        r_d.font.color.rgb = BLACK
 
-    # Lưu tệp Word hoàn chỉnh
     out_file = BASE_DIR / "DangQuocThanhTai_Bao_cao_cuoi_ky.docx"
     doc.save(str(out_file))
-    print(f"SUCCESS: Generated EXACT 15-page Word report: {out_file}")
+    print(f"SUCCESS: Generated EXACT 15-page Word report (12pt, FULL BLACK): {out_file}")
 
 
 if __name__ == '__main__':
