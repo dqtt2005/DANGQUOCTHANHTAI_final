@@ -29,3 +29,10 @@ DangQuocThanhTai_Phieu_ra_soat_khoa_hoc.docx.pdf
 check_status.py
 check_ckpt.py
 check_res.py
+finalize.py
+get_pages.ps1
+export_pdf_check.ps1
+calibrate_15pages.py
+build_full_15page_report.py
+*.txt
+~$*
