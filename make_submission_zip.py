@@ -24,7 +24,9 @@ include_patterns = [
     "src/",
     "run.py",
     "complete_pipeline.py",
+    "make_beautiful_thesis_docx.py",
     "make_exact_15page_docx.py",
+    "generate_spectrogram_fig.py",
     "notebooks/",
     
     # Kết quả
